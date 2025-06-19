@@ -23,6 +23,7 @@ function App() {
     setLoading(true);
 
     try {
+      //post method
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -34,7 +35,7 @@ function App() {
       setChat((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error:", error);
-      setChat((prev) => [...prev, { sender: "bot", text: "⚠️ Something went wrong!" }]);
+      setChat((prev) => [...prev, { sender: "bot", text: "Something went wrong!" }]);
     } finally {
       setLoading(false);
     }
