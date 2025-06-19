@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
-// Define message type once at the top
+// Type for each chat message
 type Message = {
   sender: "user" | "bot";
   text: string;
 };
 
 function App() {
-  // Use the Message type in state
   const [chat, setChat] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -32,23 +32,29 @@ function App() {
       const botMessage: Message = { sender: "bot", text: data.reply };
       setChat((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
+      setChat((prev) => [...prev, { sender: "bot", text: "⚠️ Something went wrong!" }]);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat, loading]);
+
   return (
     <div className="App">
-      <h1>💬 ChatGPT React App</h1>
+      <h1>AI Communicator</h1>
 
       <div className="chat-box">
         {chat.map((msg, i) => (
           <div key={i} className={`message ${msg.sender}`}>
-            <strong>{msg.sender === "user" ? "You" : "ChatGPT"}:</strong> {msg.text}
+            {msg.text}
           </div>
         ))}
         {loading && <div className="message bot">Typing...</div>}
+        <div ref={bottomRef}></div>
       </div>
 
       <div className="input-area">
@@ -56,7 +62,7 @@ function App() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          placeholder="Type your message..."
+          placeholder="Start Chatting..."
         />
         <button onClick={sendMessage}>Send</button>
       </div>
@@ -65,4 +71,3 @@ function App() {
 }
 
 export default App;
-
