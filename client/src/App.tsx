@@ -13,6 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  //message sending and response reciving method
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -39,6 +40,7 @@ function App() {
     }
   };
 
+//handles scrolling
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, loading]);
